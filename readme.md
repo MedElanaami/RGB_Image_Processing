@@ -170,9 +170,3 @@ Pour chaque pixel:
 
 ## Contact et Support
 Pour toute question ou suggestion d'amélioration, veuillez créer une issue dans le dépôt du projet.
-
-## Contrubuteur
-- Mohamed Elanâami
-- Hajar Benbounjima 
-- Hajar Boulmane 
-- Yahya Elouarrak
