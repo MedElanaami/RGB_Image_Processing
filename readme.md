@@ -1,29 +1,28 @@
-# Traitement d'Images RGB en C
+# Projet de Traitement d'Images RGB en C
+
+## Table des Matières
+1. [Description](#description)
+2. [Installation](#installation)
+3. [Structure du Projet](#structure-du-projet)
+4. [Fonctionnalités](#fonctionnalités)
+5. [Algorithmes Implémentés](#algorithmes-implémentés)
+6. [Guide d'Utilisation](#guide-dutilisation)
+7. [Aspects Techniques](#aspects-techniques)
+8. [Limitations et Améliorations Possibles](#limitations-et-améliorations-possibles)
 
 ## Description
-Ce projet implémente un système de traitement d'images RGB en C, permettant la création, l'initialisation et la manipulation d'images numériques. Le programme offre une interface utilisateur simple pour gérer des images RGB et appliquer des filtres basiques.
+Ce projet est un programme de traitement d'images RGB développé en C. Il permet de créer, manipuler et appliquer différents filtres sur des images numériques en utilisant une représentation RGB (Rouge, Vert, Bleu).
 
-## Fonctionnalités
-- Création d'images RGB avec dimensions personnalisables
-- Deux modes d'initialisation :
-  - Génération automatique avec des valeurs aléatoires
-  - Saisie manuelle des valeurs RGB pour chaque pixel
-- Traitement d'image :
-  - Filtre de flou (moyenne 3x3)
-- Affichage des valeurs RGB avant et après traitement
+## Installation
 
-## Structure du Programme
-Le programme est organisé autour d'une structure principale `RGBImage` qui contient :
-- Un tableau 3D pour les données RGB
-- Largeur de l'image
-- Hauteur de l'image
-- Résolution
-
-## Comment Utiliser
+### Prérequis
+- Compilateur GCC
+- Make (optionnel)
+- Environnement Unix/Linux ou Windows avec compilateur C
 
 ### Compilation
 ```bash
-gcc -o traitement_image main.c
+gcc -o traitement_image main.c -lm
 ```
 
 ### Exécution
@@ -31,120 +30,149 @@ gcc -o traitement_image main.c
 ./traitement_image
 ```
 
-### Utilisation
-1. Lancer le programme
-2. Entrer les dimensions souhaitées pour l'image (largeur et hauteur)
-3. Choisir le mode d'initialisation :
-   - Option 1 : Valeurs aléatoires
-   - Option 2 : Saisie manuelle des valeurs
-4. Observer les valeurs de l'image avant traitement
-5. Le programme applique automatiquement le filtre de flou
-6. Observer les résultats après traitement
+## Structure du Projet
 
-## Fonctions Principales
-
-### `createImage`
-- Crée une nouvelle image avec les dimensions spécifiées
-- Alloue la mémoire nécessaire pour les données RGB
-
-### `initializeRandom`
-- Initialise l'image avec des valeurs RGB aléatoires
-- Utilise la fonction rand() pour générer des valeurs entre 0 et 255
-
-### `initializeFromKeyboard`
-- Permet à l'utilisateur de saisir manuellement les valeurs RGB
-- Vérifie que les valeurs sont comprises entre 0 et 255
-
-### `applyBlur`
-- Applique un filtre de flou sur l'image
-- Utilise une moyenne 3x3 des pixels environnants
-
-### `displayImage`
-- Affiche les valeurs RGB de chaque pixel
-- Format d'affichage : Pixel[x][y]: R:xxx G:xxx B:xxx
-
-## Gestion de la Mémoire
-- Allocation dynamique de la mémoire pour les données d'image
-- Libération appropriée de la mémoire après utilisation
-- Utilisation de tableaux temporaires pour le traitement d'image
-
-## Limitations
-- Taille d'image limitée par la mémoire disponible
-- Filtre de flou simple (moyenne 3x3)
-- Les bords de l'image ne sont pas traités par le filtre de flou
-
-## Améliorations Possibles
-1. Ajout de nouveaux filtres (Sobel, Gauss, etc.)
-2. Support pour le chargement/sauvegarde d'images depuis/vers des fichiers
-3. Interface graphique
-4. Optimisation des performances pour les grandes images
-5. Traitement des bords de l'image
-
-## Notes Techniques
-- Langage : C
-- Utilisation intensive de pointeurs et d'allocation dynamique
-- Structure de données optimisée pour le traitement d'images
-
-
-
-
---
-[Previous sections remain the same...]
-
-## Logique du Filtre de Flou (Blur)
-
-### Principe de Base
-Le filtre de flou implémente un "box blur" ou "mean blur" qui fonctionne selon le principe suivant :
-- Pour chaque pixel de l'image, on calcule la moyenne des valeurs RGB des pixels voisins
-- On utilise une fenêtre glissante de 3x3 pixels
-- Le pixel central est remplacé par la moyenne des pixels dans la fenêtre
-
-### Formule Mathématique
-Pour chaque composante de couleur (R, G, B) :
-```
-Pixel_floué[x][y] = Σ(pixels_voisins) / nombre_de_pixels_voisins
+### Structure Principale (RGBImage)
+```c
+typedef struct {
+    unsigned char ***data;  // Tableau 3D pour RGB
+    int width;             // Largeur
+    int height;            // Hauteur
+    int resolution;        // Résolution de couleur
+} RGBImage;
 ```
 
-### Étapes Détaillées de l'Algorithme
-1. **Création d'une Image Temporaire**
-   - Une copie de l'image originale est créée pour stocker les résultats
-   - Ceci évite que les calculs soient affectés par les pixels déjà floutés
+### Organisation des Fichiers
+- `main.c` : Programme principal
+- `README.md` : Documentation
+- `Makefile` : Script de compilation (optionnel)
 
-2. **Parcours de l'Image**
+## Fonctionnalités
+
+### 1. Création d'Image
+- Création d'une nouvelle image RGB
+- Spécification des dimensions
+- Allocation dynamique de mémoire
+
+### 2. Initialisation
+- Mode automatique (valeurs aléatoires)
+- Mode manuel (saisie utilisateur)
+- Gestion de la résolution couleur
+
+### 3. Filtres et Traitements
+- Flou (Blur)
+- Détection de contours (Sobel)
+- Réduction de bruit (Filtre médian)
+
+### 4. Affichage
+- Visualisation des valeurs RGB
+- Affichage avant/après traitement
+
+## Algorithmes Implémentés
+
+### 1. Filtre de Flou (Blur)
+```
+Pour chaque pixel P(x,y):
+    somme = 0
+    count = 0
+    Pour chaque voisin V dans fenêtre 3x3:
+        Si V est dans l'image:
+            somme += V
+            count++
+    P(x,y) = somme / count
+```
+
+### 2. Détection de Contours (Sobel)
+#### Matrices de Sobel
+```
+Gx = [[-1 0 1]    Gy = [[-1 -2 -1]
+      [-2 0 2]          [ 0  0  0]
+      [-1 0 1]]        [ 1  2  1]]
+
+Magnitude = √(Gx² + Gy²)
+```
+
+### 3. Réduction de Bruit (Filtre Médian)
+```
+Pour chaque pixel:
+    Collecter les valeurs des 9 voisins
+    Trier les valeurs
+    Remplacer par la valeur médiane
+```
+
+## Guide d'Utilisation
+
+### Menu Principal
+1. Création de l'image
    ```
-   Pour chaque pixel (i,j):
-     Pour chaque composante couleur (R,G,B):
-       somme = 0
-       compte = 0
-       Pour di = -1 à 1:
-         Pour dj = -1 à 1:
-           Si le pixel voisin (i+di, j+dj) est dans l'image:
-             somme += valeur_du_pixel
-             compte++
-       nouvelle_valeur = somme / compte
+   Entrez la largeur: _
+   Entrez la hauteur: _
    ```
 
-3. **Gestion des Bords**
-   - Les pixels en bordure utilisent moins de voisins
-   - Le nombre de voisins (compte) est ajusté automatiquement
-   - Exemple: un pixel dans un coin n'utilise que 4 pixels au lieu de 9
+2. Choix d'initialisation
+   ```
+   1. Valeurs aleatoires
+   2. Saisie manuelle
+   ```
 
-### Exemple Numérique
-Pour un pixel central avec ses voisins :
-```
-Avant le flou :          Calcul :
-[50  100  50]           (50 + 100 + 50 +
-[100 200 100]  -->      100 + 200 + 100 +    -->  Résultat = 100
-[50  100  50]           50 + 100 + 50) / 9
-```
+3. Menu des opérations
+   ```
+   1. Afficher l'image
+   2. Appliquer le flou
+   3. Reduire le bruit
+   4. Detecter les contours
+   0. Quitter
+   ```
 
-### Impact du Flou
-- Réduit les variations brusques de couleur
-- Adoucit les détails fins de l'image
-- L'intensité du flou dépend du nombre de fois qu'il est appliqué
+## Aspects Techniques
 
-### Complexité
-- Temporelle : O(w × h × 9) où w = largeur, h = hauteur
-- Spatiale : O(w × h) pour l'image temporaire
+### Gestion de la Mémoire
+- Allocation dynamique pour les données d'image
+- Libération appropriée des ressources
+- Gestion des tableaux temporaires
 
-[Rest of the README remains the same...]
+### Performance
+- Complexité temporelle : O(w × h) pour les filtres basiques
+- Complexité spatiale : O(w × h) pour le stockage
+
+### Sécurité
+- Vérification des limites de l'image
+- Validation des entrées utilisateur
+- Gestion des erreurs d'allocation
+
+## Limitations et Améliorations Possibles
+
+### Limitations Actuelles
+1. Pas de support pour les fichiers image
+2. Taille limitée par la mémoire disponible
+3. Interface en ligne de commande uniquement
+4. Pas de prévisualisation graphique
+
+### Améliorations Futures
+1. Support des formats d'image standard (PNG, JPEG)
+2. Interface graphique
+3. Optimisation des performances
+4. Filtres supplémentaires
+   - Rotation
+   - Redimensionnement
+   - Ajustement des couleurs
+
+### Notes de Développement
+- Version actuelle : 1.0
+- Dernière mise à jour : 2024
+- Langage : C standard
+- Dépendances : stdio.h, stdlib.h, math.h
+
+## Captures d'écran
+![alt text](assets/image.png)
+![alt text](assets/image-1.png)
+![alt text](assets/image-2.png)
+
+## Contact et Support
+Pour toute question ou suggestion d'amélioration, veuillez créer une issue dans le dépôt du projet.
+
+## Contrubuteur
+- Mohamed Elanâami
+- Hajar Benbounjima 
+- Hajar Boulmane 
+- Yahya Elouarrak
