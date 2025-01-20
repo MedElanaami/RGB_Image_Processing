@@ -169,9 +169,3 @@ For each pixel:
 ![alt text](assets/image-2.png)
 ## Contact and Support
 For any questions or suggestions, please create an issue in the project repository.
-
-## Contributors
-- Mohamed Elanâami  
-- Hajar Benbounjima  
-- Hajar Boulmane  
-- Yahya Elouarrak  
